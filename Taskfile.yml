@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - GOOS=linux go build -o dist/pruner-linux main.go
+      - go build -o dist/pruner main.go

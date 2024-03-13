@@ -13,6 +13,7 @@ import (
 )
 
 var ignorePatterns []string
+var needToCopyPackages = false
 
 func main() {
 
@@ -63,30 +64,15 @@ func runPrune(projects []string, docker bool) {
 		pruneProject(project, docker)
 	}
 
-	copyAllGoModFiles("packages/", filepath.Join("out", "json", "packages"))
-
-	copyAllGoPackages("packages/", filepath.Join("out", "full", "packages"))
-
-	var turboCmd *exec.Cmd
-	if docker {
-		turboCmd = exec.Command("turbo", append([]string{"prune", "--docker"}, projects...)...)
-	} else {
-		turboCmd = exec.Command("turbo", append([]string{"prune"}, projects...)...)
-	}
-
-	turboCmd.Stdout = os.Stdout
-	turboCmd.Stderr = os.Stderr
-	err = turboCmd.Run()
-	if err != nil {
-		fmt.Println("Error running 'turbo prune':", err)
-		return
+	if needToCopyPackages {
+		copyAllGoModFiles("packages/", filepath.Join("out", "json", "packages"))
+		copyAllGoPackages("packages/", filepath.Join("out", "full", "packages"))
 	}
 
 	fmt.Println("Prune completed successfully!")
 }
 
 func pruneProject(project string, docker bool) {
-
 	// Run only if current project directory is a Go project
 	_, err := os.Stat(filepath.Join("apps", project, "go.mod"))
 	if err != nil {
@@ -97,6 +83,8 @@ func pruneProject(project string, docker bool) {
 
 		log.Panicln("Error checking if project is a Go project:", err)
 	}
+
+	needToCopyPackages = true
 
 	// Step 2: Copy go.work out/json and out/full folders
 	copyFolder("go.work", "./out/json/go.work")
