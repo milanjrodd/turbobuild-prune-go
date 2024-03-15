@@ -1,7 +1,7 @@
 # .goreleaser.yml
 # Build customization
 builds:
-  - binary: prune-go
+  - binary: turbobuild-prune-go
     goos:
       - windows
       - darwin
