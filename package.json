@@ -24,7 +24,7 @@
     "@go-task/go-npm": "^0.2.0"
   },
   "goBinary": {
-    "name": "prune-go",
+    "name": "turbobuild-prune-go",
     "path": "./bin",
     "url": "https://github.com/milanjrodd/turbobuild-prune-go/releases/download/v{{version}}/turbobuild-prune-go_{{version}}_{{platform}}_{{arch}}.tar.gz"
   }
