@@ -1,0 +1,29 @@
+{
+  "name": "turbobuild-prune-go",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "go-npm install",
+    "preuninstall": "go-npm uninstall"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milanjrodd/turbobuild-prune-go.git"
+  },
+  "keywords": [],
+  "author": "Milan Rodd",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/milanjrodd/turbobuild-prune-go/issues"
+  },
+  "homepage": "https://github.com/milanjrodd/turbobuild-prune-go#readme",
+  "dependencies": {
+    "go-npm": "^0.1.9"
+  },
+  "goBinary": {
+    "name": "prune-go",
+    "path": "./bin",
+    "url": "https://github.com/milanjrodd/turbobuild-prune-go/releases/download/v{{version}}/html-serve_{{version}}_{{platform}}_{{arch}}.tar.gz"
+  }
+}
