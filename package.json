@@ -26,6 +26,6 @@
   "goBinary": {
     "name": "prune-go",
     "path": "./bin",
-    "url": "https://github.com/milanjrodd/turbobuild-prune-go/releases/download/v{{version}}/html-serve_{{version}}_{{platform}}_{{arch}}.tar.gz"
+    "url": "https://github.com/milanjrodd/turbobuild-prune-go/releases/download/v{{version}}/turbobuild-prune-go_{{version}}_{{platform}}_{{arch}}.tar.gz"
   }
 }
