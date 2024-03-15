@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "go-npm install",
-    "preuninstall": "go-npm uninstall"
+    "preuninstall": "go-npm uninstall",
+    "postversion": "git push && npm run release",
+    "release": "npm publish --access=public && goreleaser release"
   },
   "repository": {
     "type": "git",
