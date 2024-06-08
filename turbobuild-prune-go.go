@@ -10,6 +10,7 @@ import (
 
 	ignore "github.com/codeskyblue/dockerignore"
 	"github.com/spf13/cobra"
+	"golang.org/x/mod/modfile"
 )
 
 var ignorePatterns []string
@@ -82,6 +83,13 @@ func pruneProject(project string, docker bool) {
 		}
 
 		log.Panicln("Error checking if project is a Go project:", err)
+	}
+
+	// Step 1: Remove other apps from go.work
+	_, err = modfile.ParseWork("go.work", nil, nil)
+	if err != nil {
+		log.Panicln("Error parsing go.work:", err)
+		return
 	}
 
 	needToCopyPackages = true
