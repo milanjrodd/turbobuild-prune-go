@@ -6,14 +6,10 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path"
 	"path/filepath"
-	"slices"
-	"strings"
 
 	ignore "github.com/codeskyblue/dockerignore"
 	"github.com/spf13/cobra"
-	"golang.org/x/mod/modfile"
 )
 
 var ignorePatterns []string
@@ -55,28 +51,6 @@ func runPrune(projects []string, docker bool) {
 		return
 	}
 
-	dat, err := os.ReadFile("go.work")
-	if err != nil {
-		log.Panicln("Error reading go.work:", err)
-		return
-	}
-	workFile, err := modfile.ParseWork("", dat, nil)
-	if err != nil {
-		log.Panicln("Error parsing go.work:", err)
-		return
-	}
-	for _, useStatement := range workFile.Use {
-
-		isProjectToPrune := !slices.Contains(projects, path.Base(useStatement.Path))
-		if strings.Contains(useStatement.Path, "apps") && isProjectToPrune {
-			err = exec.Command("go", "work", "edit", "-dropuse="+useStatement.Path, "go.work").Run()
-			if err != nil {
-				fmt.Println("Can't drop "+useStatement.Path+":", err)
-				return
-			}
-		}
-	}
-
 	for _, project := range projects {
 		pruneProject(project, docker)
 	}
@@ -84,6 +58,36 @@ func runPrune(projects []string, docker bool) {
 	if needToCopyPackages {
 		copyAllGoModFiles("packages/", filepath.Join("out", "json", "packages"))
 		copyAllGoPackages("packages/", filepath.Join("out", "full", "packages"))
+	}
+
+	cmdGoworkJson := exec.Command("go", "work", "use", "-r", ".")
+	cmdGoworkJson.Dir = "out/json"
+	cmdGoworkJson.Stdout = os.Stdout
+	cmdGoworkJson.Stderr = os.Stderr
+	err = cmdGoworkJson.Run()
+	if err != nil {
+		fmt.Println("Error running 'go work use -r .' for 'out/json':", err)
+		return
+	}
+
+	cmdGoworkFull := exec.Command("go", "work", "use", "-r", ".")
+	cmdGoworkFull.Dir = "out/json"
+	cmdGoworkFull.Stdout = os.Stdout
+	cmdGoworkFull.Stderr = os.Stderr
+	err = cmdGoworkFull.Run()
+	if err != nil {
+		fmt.Println("Error running 'go work use -r .' for 'out/full':", err)
+		return
+	}
+
+	cmdGoworkOut := exec.Command("go", "work", "use", "-r", ".")
+	cmdGoworkOut.Dir = "out"
+	cmdGoworkOut.Stdout = os.Stdout
+	cmdGoworkOut.Stderr = os.Stderr
+	err = cmdGoworkOut.Run()
+	if err != nil {
+		fmt.Println("Error running 'go work use -r .' for 'out':", err)
+		return
 	}
 
 	fmt.Println("Prune completed successfully!")
