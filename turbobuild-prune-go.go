@@ -6,7 +6,10 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
+	"slices"
+	"strings"
 
 	ignore "github.com/codeskyblue/dockerignore"
 	"github.com/spf13/cobra"
@@ -52,13 +55,26 @@ func runPrune(projects []string, docker bool) {
 		return
 	}
 
-	cmdGowork := exec.Command("go", "work", "use", "-r", ".")
-	cmdGowork.Stdout = os.Stdout
-	cmdGowork.Stderr = os.Stderr
-	err = cmdGowork.Run()
+	dat, err := os.ReadFile("go.work")
 	if err != nil {
-		fmt.Println("Error running 'go work use -r .':", err)
+		log.Panicln("Error reading go.work:", err)
 		return
+	}
+	workFile, err := modfile.ParseWork("", dat, nil)
+	if err != nil {
+		log.Panicln("Error parsing go.work:", err)
+		return
+	}
+	for _, useStatement := range workFile.Use {
+
+		isProjectToPrune := !slices.Contains(projects, path.Base(useStatement.Path))
+		if strings.Contains(useStatement.Path, "apps") && isProjectToPrune {
+			err = exec.Command("go", "work", "edit", "-dropuse="+useStatement.Path, "go.work").Run()
+			if err != nil {
+				fmt.Println("Can't drop "+useStatement.Path+":", err)
+				return
+			}
+		}
 	}
 
 	for _, project := range projects {
