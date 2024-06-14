@@ -71,7 +71,7 @@ func runPrune(projects []string, docker bool) {
 	}
 
 	cmdGoworkFull := exec.Command("go", "work", "use", "-r", ".")
-	cmdGoworkFull.Dir = "out/json"
+	cmdGoworkFull.Dir = "out/full"
 	cmdGoworkFull.Stdout = os.Stdout
 	cmdGoworkFull.Stderr = os.Stderr
 	err = cmdGoworkFull.Run()
