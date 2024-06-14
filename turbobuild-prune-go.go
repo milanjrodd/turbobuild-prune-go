@@ -51,15 +51,6 @@ func runPrune(projects []string, docker bool) {
 		return
 	}
 
-	cmdGowork := exec.Command("go", "work", "use", "-r", ".")
-	cmdGowork.Stdout = os.Stdout
-	cmdGowork.Stderr = os.Stderr
-	err = cmdGowork.Run()
-	if err != nil {
-		fmt.Println("Error running 'go work use -r .':", err)
-		return
-	}
-
 	for _, project := range projects {
 		pruneProject(project, docker)
 	}
@@ -67,6 +58,36 @@ func runPrune(projects []string, docker bool) {
 	if needToCopyPackages {
 		copyAllGoModFiles("packages/", filepath.Join("out", "json", "packages"))
 		copyAllGoPackages("packages/", filepath.Join("out", "full", "packages"))
+	}
+
+	cmdGoworkJson := exec.Command("go", "work", "use", "-r", ".")
+	cmdGoworkJson.Dir = "out/json"
+	cmdGoworkJson.Stdout = os.Stdout
+	cmdGoworkJson.Stderr = os.Stderr
+	err = cmdGoworkJson.Run()
+	if err != nil {
+		fmt.Println("Error running 'go work use -r .' for 'out/json':", err)
+		return
+	}
+
+	cmdGoworkFull := exec.Command("go", "work", "use", "-r", ".")
+	cmdGoworkFull.Dir = "out/full"
+	cmdGoworkFull.Stdout = os.Stdout
+	cmdGoworkFull.Stderr = os.Stderr
+	err = cmdGoworkFull.Run()
+	if err != nil {
+		fmt.Println("Error running 'go work use -r .' for 'out/full':", err)
+		return
+	}
+
+	cmdGoworkOut := exec.Command("go", "work", "use", "-r", ".")
+	cmdGoworkOut.Dir = "out"
+	cmdGoworkOut.Stdout = os.Stdout
+	cmdGoworkOut.Stderr = os.Stderr
+	err = cmdGoworkOut.Run()
+	if err != nil {
+		fmt.Println("Error running 'go work use -r .' for 'out':", err)
+		return
 	}
 
 	fmt.Println("Prune completed successfully!")
