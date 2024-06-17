@@ -1,14 +1,14 @@
-version: '3'
+version: "3"
 
 tasks:
   build:
     cmds:
       # Apple Silicon
-      - GOOS=darwin GOARCH=arm64 go build -o dist/pruner-arm64-darwin main.go
+      - GOOS=darwin GOARCH=arm64 go build -o dist/pruner-arm64-darwin turbobuild-prune-go.go
       # 64-bit
-      - GOOS=linux GOARCH=amd64 go build -o dist/pruner-amd64-linux main.go
-      - GOOS=darwin GOARCH=amd64 go build -o dist/pruner-amd64-darwin main.go
-      - GOOS=windows GOARCH=amd64 go build -o dist/pruner-amd64-windows main.go
+      - GOOS=linux GOARCH=amd64 go build -o dist/pruner-amd64-linux turbobuild-prune-go.go
+      - GOOS=darwin GOARCH=amd64 go build -o dist/pruner-amd64-darwin turbobuild-prune-go.go
+      - GOOS=windows GOARCH=amd64 go build -o dist/pruner-amd64-windows turbobuild-prune-go.go
       # 32-bit
-      - GOOS=linux GOARCH=386 go build -o dist/pruner-386-linux main.go
-      - GOOS=windows GOARCH=386 go build -o dist/pruner-386-windows main.go
+      - GOOS=linux GOARCH=386 go build -o dist/pruner-386-linux turbobuild-prune-go.go
+      - GOOS=windows GOARCH=386 go build -o dist/pruner-386-windows turbobuild-prune-go.go
